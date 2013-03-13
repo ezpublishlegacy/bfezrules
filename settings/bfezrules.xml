@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- for params, required by default is true -->
+<!-- type can be string, ... -->
+<operators>
+	<!-- Sample operator 
+	<operator name="isMultiselect">
+		<param name="classname" type="string" required="true" />
+		<param name="attributename" type="string" required="true" />
+	</operator>
+-->	
+</operators>

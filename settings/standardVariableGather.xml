@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rules>
+	<rule name="Basic Global Variable Gathering">
+		<logic><![CDATA[
+			// PHP code goes inside logic items
+			$userInfoHash = array();
+	
+			$userObj = eZUser::currentUser();
+			$userInfoHash["userObj"] = $userObj;
+			$userInfoHash["login"] = $userObj->attribute("login");
+			$userInfoHash["email"] = $userObj->attribute("email");
+			$userInfoHash["GroupIDArr"] = $userObj->attribute("groups");
+				// roles, permissions
+			$roleObjArr = $userObj->attribute("roles");
+			$userInfoHash["RoleObjArr"] = $roleObjArr;
+			$userInfoHash["RoleNameArr"] = array();
+			$userInfoHash["RoleIdArr"] = array();
+			$roleIdArr = array();
+			foreach ($roleObjArr as $roleObj) {
+				array_push($userInfoHash["RoleNameArr"], $roleObj->Name);
+				array_push($userInfoHash["RoleIdArr"], $roleObj->ID);
+			}
+	
+				// NODE NEXT!
+			$nodeInfoHash = array();
+			$nodeInfoHash["nodeObj"] = $nodeObj;
+			$nodeInfoHash["nodeID"] = $nodeObj->NodeID;
+			$nodeInfoHash["classIdentifier"] = $nodeObj->ClassIdentifier;
+			$nodeInfoHash["depth"] = $nodeObj->Depth;
+			$nodeInfoHash["path"] = $nodeObj->attribute("path");
+			$nodeInfoHash["pathArray"] = $nodeObj->attribute("path_array");
+			$nodeInfoHash["urlAlias"] = $nodeObj->attribute("url_alias");
+
+			// then store this in the scope where you can reach it
+			self::setBucket("userInfo", $userInfoHash);
+			self::setBucket("nodeInfo", $nodeInfoHash);
+			
+			// two notes: 
+			// 1) the first param should be a valid PHP variable name
+			// it is then available to you everywhere, as $userInfo, or $nodeInfo, etc
+			// 2) the other static call available is:
+			//		self::setBucketVar($bucketName, $varName, $value);
+			// that way, you can append established arrays
+		]]></logic>
+	</rule>
+</rules>
