@@ -1,7 +1,7 @@
 <?php
 
 // TODO: put default into ini
-class bfezrules extends customExtension {
+class bfezrules extends bfCustomExtension {
 	function __construct() {
 		parent::__construct();
 	}
