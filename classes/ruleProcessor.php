@@ -21,7 +21,7 @@ class ruleProcessor {
 		// load up all the xml files associated
 		$fullActionArr = array();
 		foreach ($xmlFileList as $xmlFile) {
-			$actionArr = $this->processXMLFile($xmlFile, $nodeObj);
+			$actionArr = $this->processXMLFile($xmlFile, $nodeObj); // gets an array of XML action nodes
 			$fullActionArr = array_merge($fullActionArr, $actionArr);
 		}
 		if ($returnAsXMLNodes) {
@@ -58,7 +58,15 @@ class ruleProcessor {
 					$ruleCounter++;
 					$isRuleSatisfied = $this->isRuleSatisfied($nodeObj, $ruleXMLNode, $cleanedUpPath, $ruleCounter);
 					if ($isRuleSatisfied) {
-						$actionArr = array_merge($actionArr, $this->extractActionsFromNode($ruleXMLNode)); 
+						$aActionNodes = $this->extractActionsFromNode($ruleXMLNode);
+						// append all nodes with two attributes
+						$fromFile = $xmlFile;
+						$fromRule = $ruleXMLNode->hasAttribute("name") ? $ruleXMLNode->getAttribute("name") : "(NULL: no name given)";
+						foreach ($aActionNodes as $xmlActionNode) {
+							$xmlActionNode->setAttribute("fromFile", $fromFile);
+							$xmlActionNode->setAttribute("fromRule", $fromRule);
+						}
+						$actionArr = array_merge($actionArr, $aActionNodes); 
 					}
 				}
 			}
@@ -120,6 +128,12 @@ EOLOGIC;
 		$allAttributeCollection = $actionXMLNode->attributes;
 		foreach ($allAttributeCollection as $attrName => $attrValue) {
 			$returnHash[$attrName] = $attrValue->value;
+			if ($actionXMLNode->hasAttribute("fromFile")) {
+				$returnHash["fromFile"] = $actionXMLNode->getAttribute("fromFile");
+			}
+			if ($actionXMLNode->hasAttribute("fromRule")) {
+				$returnHash["fromRule"] = $actionXMLNode->getAttribute("fromRule");
+			}
 		}
 		return($returnHash);
 	}
